@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * todo:实现对象查询缓存
  */
+
+
 @RestController
 @RequestMapping("/shop-type")
 public class ShopTypeController {

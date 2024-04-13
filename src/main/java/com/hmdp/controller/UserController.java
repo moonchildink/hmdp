@@ -50,10 +50,6 @@ public class UserController {
         return userService.register(loginForm,session);
     }
 
-    /**
-     * 登出功能
-     * @return 无
-     */
     @PostMapping("/logout")
     public Result logout(){
         // TODO 实现登出功能
