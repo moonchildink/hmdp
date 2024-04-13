@@ -75,6 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                             .setFieldValueEditor((key, value) -> value.toString()));
             UserHolder.saveUser(userDTO);
             String key = SystemConstants.REDIS_LOGIN_PREFIX + token;
+            System.out.println(userMap);
             template.opsForHash().putAll(key, userMap);
             template.expire(key, SystemConstants.LOGIN_TOKEN_TIME, TimeUnit.MINUTES);
             return Result.ok(token);

@@ -7,7 +7,7 @@ public class SystemConstants {
     public static final String SESSION_CODE_ATTRIBUTE = "code";
 
     public static final String REDIS_CODE_PREFIX  = "code_phone_login: ";
-    public static final String REDIS_LOGIN_PREFIX = "login_token: ";
+    public static final String REDIS_LOGIN_PREFIX = "login:token:";
 
     public static  final long LOGIN_TOKEN_TIME = 30L;
 
