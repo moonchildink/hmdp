@@ -16,4 +16,8 @@ public interface IBlogService extends IService<Blog> {
     public Result getBlogById(String blogId);
 
     Result likeBlog(Long id);
+
+    Result queryHotBlogs(Integer current);
+
+    Result getBlogLikes(String id);
 }

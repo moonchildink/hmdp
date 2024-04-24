@@ -13,6 +13,8 @@ public class SystemConstants {
 
     public static final String SECKILL_STOCK = "seckill:stock:";
 
+    public static final String USER_LIKE_PREFIX = "blog:like:";
+
 
     public static final String SESSION_PHONE_ATTRIBUTE = "phone";
 
