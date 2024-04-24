@@ -74,4 +74,13 @@ public class BlogController {
     public Result getBlogLikes(@PathVariable("id") String id) {
         return blogService.getBlogLikes(id);
     }
+
+
+    @GetMapping("/of/user")
+    public Result getUserBlogs(@RequestParam(value = "current", defaultValue = "1") Integer current,
+                               @RequestParam("id") Long id) {
+        return blogService.queryUserBlogs(current,id);
+    }
+
+
 }

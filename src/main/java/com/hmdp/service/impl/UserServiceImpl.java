@@ -83,12 +83,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("手机号重复");
     }
 
+    @Override
+    public Result queryUserById(String userId) {
+        // todo:查询指定id的用户
+        User user = query().eq("id", userId).one();
+        if (user == null)
+            return Result.fail("用户不存在");
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        return Result.ok(userDTO);
+    }
+
 
     private User createUserWithPhone(String phone) {
-        User user =  new User().setPhone(phone).setNickName(SystemConstants.USER_NICK_NAME_PREFIX + RandomUtil.randomString(10));
+        User user = new User().setPhone(phone).setNickName(SystemConstants.USER_NICK_NAME_PREFIX + RandomUtil.randomString(10));
         save(user);
-        QueryWrapper<User> query  = new QueryWrapper<>();
-        query.eq("phone",phone);
+        QueryWrapper<User> query = new QueryWrapper<>();
+        query.eq("phone", phone);
         return mapper.selectOne(query);
     }
 }

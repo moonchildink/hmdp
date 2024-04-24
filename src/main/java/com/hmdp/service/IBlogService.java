@@ -20,4 +20,6 @@ public interface IBlogService extends IService<Blog> {
     Result queryHotBlogs(Integer current);
 
     Result getBlogLikes(String id);
+
+    Result queryUserBlogs(Integer current, Long id);
 }
