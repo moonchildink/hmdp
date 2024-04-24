@@ -22,6 +22,14 @@ public class LoginInterceptor implements HandlerInterceptor {
         this.stringRedisTemplate = template;
     }
 
+    /**
+     * 此处的用户缓存TTL是指：用户在一段时间内没访问服务器以后，将相关信息从服务器删除
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("authorization");

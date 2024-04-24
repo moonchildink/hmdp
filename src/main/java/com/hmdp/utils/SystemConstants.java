@@ -1,7 +1,7 @@
 package com.hmdp.utils;
 
 public class SystemConstants {
-    public static final String IMAGE_UPLOAD_DIR = "D:\\lesson\\nginx-1.18.0\\html\\hmdp\\imgs\\";
+    public static final String IMAGE_UPLOAD_DIR = "D:\\code\\Java\\hmdp\\src\\main\\resources\\nginx-1.18.0\\nginx-1.18.0\\html\\hmdp\\imgs";
     public static final String USER_NICK_NAME_PREFIX = "user_";
 
     public static final String SESSION_CODE_ATTRIBUTE = "code";
@@ -10,6 +10,8 @@ public class SystemConstants {
     public static final String REDIS_LOGIN_PREFIX = "login:token:";
 
     public static  final long LOGIN_TOKEN_TIME = 30L;
+
+    public static final String SECKILL_STOCK = "seckill:stock:";
 
 
     public static final String SESSION_PHONE_ATTRIBUTE = "phone";
