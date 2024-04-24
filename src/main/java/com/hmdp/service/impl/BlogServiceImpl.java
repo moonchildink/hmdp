@@ -1,5 +1,6 @@
 package com.hmdp.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.dto.Result;
@@ -14,7 +15,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
@@ -40,27 +44,36 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     }
 
     private void isBlogLiked(Blog blog) {
-        Long userId = blog.getUserId();
-        String key = SystemConstants.USER_LIKE_PREFIX + blog.getId();
-        boolean isLiked = Boolean.TRUE.equals(template.opsForSet().isMember(key, userId.toString()));
-        blog.setIsLike(isLiked);
+        UserDTO userDTO = UserHolder.getUser();
+        if (userDTO == null)
+            return;
+        Long userId = userDTO.getId();
+        String key = SystemConstants.LIKED_USER_ZSET + blog.getId();
+        Double score = template.opsForZSet().score(key, userId.toString());
+        blog.setIsLike(score != null);
     }
 
+    /**
+     * 当前用户对指定id的blog点赞，此处可以使用zset，也就是ordered set，
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Result likeBlog(Long id) {
         Long userId = UserHolder.getUser().getId();
-        String key = SystemConstants.USER_LIKE_PREFIX + id;
-        boolean isLiked = Boolean.TRUE.equals(template.opsForSet().isMember(key, userId.toString()));
-        if (!isLiked) {
+        String key = SystemConstants.LIKED_USER_ZSET + id;
+        Double score = template.opsForZSet().score(key, userId.toString());
+        if (score == null) {
             // 未点赞
             boolean isSuccess = update().setSql("liked = liked+1").eq("id", id).update();
             if (isSuccess)
-                template.opsForSet().add(key, userId.toString());
+                template.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());
             return Result.ok();
         } else {
-            boolean isSuccess = update().setSql("liked = liked-1").eq("id", id).update();
+            boolean isSuccess = update().setSql("liked = liked - 1").eq("id", id).update();
             if (isSuccess)
-                template.opsForSet().remove(key, userId.toString());
+                template.opsForZSet().remove(key, userId.toString());
             return Result.ok();
         }
 
@@ -91,6 +104,16 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Override
     public Result getBlogLikes(String id) {
+        String key = SystemConstants.LIKED_USER_ZSET + id;
+        Set<String> range = template.opsForZSet().range(key, 0, 4);
+        if (range == null || range.isEmpty())
+            return Result.ok(Collections.emptyList());
+        List<Long> collect = range.stream().map(Long::valueOf).collect(Collectors.toList());
+        List<UserDTO> userDTOS = userService.listByIds(collect)
+                .stream()
+                .map(user -> BeanUtil.copyProperties(user, UserDTO.class))
+                .collect(Collectors.toList());
+        return Result.ok(userDTOS);
 
     }
 }
