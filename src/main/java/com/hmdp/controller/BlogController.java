@@ -79,8 +79,11 @@ public class BlogController {
     @GetMapping("/of/user")
     public Result getUserBlogs(@RequestParam(value = "current", defaultValue = "1") Integer current,
                                @RequestParam("id") Long id) {
-        return blogService.queryUserBlogs(current,id);
+        return blogService.queryUserBlogs(current, id);
     }
+
+
+
 
 
 }

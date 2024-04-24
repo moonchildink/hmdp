@@ -17,4 +17,6 @@ public interface IFollowService extends IService<Follow> {
     Result isFollowed(String userId);
 
     Result followUser(String userId, Boolean isFollow);
+
+    public Result queryCommonFollows(Long userId);
 }
