@@ -17,6 +17,7 @@ import com.hmdp.utils.RegexUtils;
 import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -67,20 +68,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = query().eq("phone", phone).one();
         if (user == null) {
             user = createUserWithPhone(phone);
-            String token = UUID.randomUUID().toString(true);
-            UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
-            Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
-                    CopyOptions.create()
-                            .setIgnoreNullValue(true)
-                            .setFieldValueEditor((key, value) -> value.toString()));
-            UserHolder.saveUser(userDTO);
-            String key = SystemConstants.REDIS_LOGIN_PREFIX + token;
-            System.out.println(userMap);
-            template.opsForHash().putAll(key, userMap);
-            template.expire(key, SystemConstants.LOGIN_TOKEN_TIME, TimeUnit.MINUTES);
-            return Result.ok(token);
-        } else
-            return Result.fail("手机号重复");
+        }
+        String token = UUID.randomUUID().toString(true);
+        UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
+        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO, new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setFieldValueEditor((key, value) -> value.toString()));
+        UserHolder.saveUser(userDTO);
+        String key = SystemConstants.REDIS_LOGIN_PREFIX + token;
+        template.opsForHash().putAll(key, userMap);
+        template.expire(key, SystemConstants.LOGIN_TOKEN_TIME, TimeUnit.MINUTES);
+        return Result.ok(token);
     }
 
     @Override

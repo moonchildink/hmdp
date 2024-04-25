@@ -3,6 +3,7 @@ package com.hmdp.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hmdp.dto.Result;
+import com.hmdp.dto.ScrollDTO;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
 import com.hmdp.service.IBlogService;
@@ -10,6 +11,7 @@ import com.hmdp.service.IUserService;
 import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -27,20 +29,11 @@ public class BlogController {
     @PostMapping
     public Result saveBlog(@RequestBody Blog blog) {
         // 获取登录用户
-        UserDTO user = UserHolder.getUser();
-        blog.setUserId(user.getId());
-        // 保存探店博文
-        blogService.save(blog);
-        // 返回id
-        return Result.ok(blog.getId());
+        return blogService.saveBlog(blog);
     }
 
     @PutMapping("/like/{id}")
     public Result likeBlog(@PathVariable("id") Long id) {
-        // 修改点赞数量
-//        blogService.update()
-//                .setSql("liked = liked + 1").eq("id", id).update();
-//        return Result.ok();
         return blogService.likeBlog(id);
     }
 
@@ -82,8 +75,9 @@ public class BlogController {
         return blogService.queryUserBlogs(current, id);
     }
 
-
-
-
+    @GetMapping("/of/follow")
+    public Result followUserBlogs(@RequestParam(value = "lastId") Long max, @RequestParam(value = "offset",required = false) Integer offset) {
+        return blogService.queryBlogOfFollow(max,offset);
+    }
 
 }

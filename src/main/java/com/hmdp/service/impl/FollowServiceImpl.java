@@ -28,7 +28,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
 
     @Override
     public Result isFollowed(String userId) {
-        String currentUserId = UserHolder.getUser().getIcon();
+        String currentUserId = UserHolder.getUser().getId().toString();
         String key = SystemConstants.FOLLOWED_USERS + currentUserId;
         boolean isFollowed = Boolean.TRUE.equals(template.opsForSet().isMember(key, userId));
         return Result.ok(isFollowed);
@@ -53,7 +53,6 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
                 String key = SystemConstants.FOLLOWED_USERS + userDTO.getId();
                 template.opsForSet().remove(key, userId);
             }
-
         }
         return Result.ok();
     }
