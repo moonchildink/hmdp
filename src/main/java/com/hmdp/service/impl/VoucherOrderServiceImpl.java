@@ -1,6 +1,7 @@
 package com.hmdp.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.config.RabbitmqConfig;
 import com.hmdp.config.RedissonConfig;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.SeckillVoucher;
@@ -10,10 +11,12 @@ import com.hmdp.service.ISeckillVoucherService;
 import com.hmdp.service.IVoucherOrderService;
 import com.hmdp.utils.RedisIdWorker;
 import com.hmdp.utils.RedisLock;
+import com.hmdp.utils.SystemConstants;
 import com.hmdp.utils.UserHolder;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -105,6 +108,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     private RedisIdWorker redisIdWorker;
     private IVoucherOrderService proxy;
 
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
     @Override
     public Result seckillVoucher(Long voucherId) {
 //        SeckillVoucher voucher = seckillVoucherService.getById(voucherId);
@@ -146,16 +152,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return Result.fail(i == 1 ? "库存不足" : "不能重复下单");
         }
 
-
-        // todo: 保存阻塞队列
         VoucherOrder order = new VoucherOrder();
         long orderId = redisIdWorker.nextId("order");
         order.setId(orderId);
         order.setUserId(id);
         order.setVoucherId(voucherId);
-        orderTasks.add(order);
+//        orderTasks.add(order);
+//
+//        proxy = (IVoucherOrderService) AopContext.currentProxy();
+//
+//        return Result.ok(orderId);
 
-        proxy = (IVoucherOrderService) AopContext.currentProxy();
+        String rabbitQueue = SystemConstants.SECKILL_MQ_QUEUE;
+        rabbitTemplate.convertAndSend(rabbitQueue, order);
 
         return Result.ok(orderId);
 

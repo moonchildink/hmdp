@@ -6,14 +6,14 @@ public class SystemConstants {
 
     public static final String SESSION_CODE_ATTRIBUTE = "code";
 
-    public static final String REDIS_CODE_PREFIX  = "code_phone_login: ";
+    public static final String REDIS_CODE_PREFIX = "code_phone_login: ";
     public static final String REDIS_LOGIN_PREFIX = "login:token:";
 
-    public static  final long LOGIN_TOKEN_TIME = 30L;
+    public static final long LOGIN_TOKEN_TIME = 30L;
 
     public static final String SECKILL_STOCK = "seckill:stock:";
 
-    public static  final String LIKED_USER_ZSET= "blog:liked:";
+    public static final String LIKED_USER_ZSET = "blog:liked:";
 
     public static final String SESSION_PHONE_ATTRIBUTE = "phone";
 
@@ -25,4 +25,8 @@ public class SystemConstants {
     public static final int MAX_PAGE_SIZE = 10;
     public static final String FOLLOWED_USERS = "follows:";
     public static final String FEED_KEY = "feeds:";
+
+    public static final String SECKILL_MQ_QUEUE = "seckill.queue";
+    public static final String SECKILL_MQ_EXCHANGE = "seckill.exchange";
+    public static final String SECKILL_MQ_ROUTINGKEY = "seckill.routingkey";
 }

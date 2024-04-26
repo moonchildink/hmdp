@@ -7,6 +7,9 @@ import com.hmdp.utils.RedisIdWorker;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -76,5 +79,29 @@ public class HmDianPingApplicationTest {
         boolean isLock = lock.tryLock();
         System.out.println(lock);
         System.out.println(isLock);
+    }
+
+
+    /**
+     * RabbitMQ测试
+     */
+    @Resource
+    RabbitTemplate rabbitTemplate;
+
+    @Test
+    public void amqpTest() {
+        String queueName = "simple.queue";
+        String message = "hello,world";
+        rabbitTemplate.convertAndSend(queueName, message);
+        System.out.println(rabbitTemplate.getRoutingKey());
+
+    }
+
+    @Test
+    @RabbitListener(queuesToDeclare = {@Queue(name = "simple.queue")})
+    public void Listener(String message) {
+        System.out.println("监听器收到信息");
+        System.out.println(message);
+
     }
 }

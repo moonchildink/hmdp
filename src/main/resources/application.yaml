@@ -3,6 +3,24 @@
 spring:
   application:
     name: hmdp
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    stream:
+      username: wy
+      password: 112358
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          max-attempts: 5
+          multiplier: 2.0
+          initial-interval: 1000ms
+          max-interval: 20000ms
   datasource:
     url: jdbc:mysql://localhost:3306/hmdp
     username: root
