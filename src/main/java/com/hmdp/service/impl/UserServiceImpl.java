@@ -57,7 +57,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Result register(LoginFormDTO formDTO, HttpSession session) {
         String phone = formDTO.getPhone();
         String code = formDTO.getCode();
-        System.out.println(formDTO);
         if (RegexUtils.isPhoneInvalid(phone) && phone.equals((String) session.getAttribute("phone"))) {
             return Result.fail("手机号错误");
         }

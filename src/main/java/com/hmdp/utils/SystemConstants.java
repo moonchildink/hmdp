@@ -9,7 +9,7 @@ public class SystemConstants {
     public static final String REDIS_CODE_PREFIX = "code_phone_login: ";
     public static final String REDIS_LOGIN_PREFIX = "login:token:";
 
-    public static final long LOGIN_TOKEN_TIME = 30L;
+    public static final long LOGIN_TOKEN_TIME = 60*24L;
 
     public static final String SECKILL_STOCK = "seckill:stock:";
 

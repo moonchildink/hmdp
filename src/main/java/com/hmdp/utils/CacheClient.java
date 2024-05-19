@@ -8,17 +8,25 @@ import com.hmdp.entity.Shop;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Slf4j
-@Component
+//@Component
+@Service
 public class CacheClient {
     private final StringRedisTemplate template;
+
+//    List<Integer> list = new ArrayList<>();
+//    list.add(1);
 
 
     public CacheClient(StringRedisTemplate template) {
@@ -107,7 +115,6 @@ public class CacheClient {
             // 新建独立线程进行重建任务
             CACHE_REBUILD_EXECUTOR.submit(() -> {
                 try {
-//                    saveShop2Redis(id, 20L);
                     R r1 = dbFallBack.apply(id);
                     this.setWithLogicalExpire(key, r1, time, unit);
                 } catch (Exception e) {

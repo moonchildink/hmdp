@@ -26,7 +26,6 @@ public class RedisLock implements iLock {
      */
     @Override
     public boolean tryLock(long ttl) {
-
         String threadId = ID_PREFIX + Thread.currentThread().getId();
         Boolean success = template.opsForValue().setIfAbsent(KEY_PREFIX + name, threadId + "", ttl, TimeUnit.SECONDS);
         return Boolean.TRUE.equals(success);
